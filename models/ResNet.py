@@ -1,8 +1,35 @@
 from keras import preprocessing, models, layers, initializers, metrics
+from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import numpy as np
 import datetime
 import tensorflow as tf
+from sklearn.metrics import classification_report, confusion_matrix
+import datetime
+import seaborn as sn
+import time
+import sys
+
+
+def import_imgs(dir):
+    train = ImageDataGenerator(shear_range=0.1, zoom_range=0.1, horizontal_flip=True, rescale=1/255)
+    test = ImageDataGenerator()
+    train_set = train.flow_from_directory(
+        dir, target_size=(64, 64),
+        batch_size=32, class_mode="categorical",
+        shuffle=True,
+    )
+    test_set = test.flow_from_directory(
+        dir, target_size=(64, 64),
+        batch_size=32, class_mode="categorical"
+    )
+    faces = {}
+    for faceValue, faceName in zip(
+        train_set.class_indices.values(), train_set.class_indices.keys()
+    ):
+        faces[faceValue] = faceName
+
+    return train_set, test_set, 0, faces
 
 
 def conv_block(model, f, filters, s=2):
@@ -96,6 +123,59 @@ def ResNet(model_shape, classes):
 
     model = models.Model(inputs = model_input, outputs = model, name="ResNet50")
     return model
+
+
+def ResNet_build(img_predict="../static/image_db/4/34_4.jpg", dir="../static/image_db/"):
+    train = preprocessing.image.ImageDataGenerator(shear_range=0.1,
+           zoom_range=0.1, horizontal_flip=True, rescale=1/255)
+    test = preprocessing.image.ImageDataGenerator()
+    train_set = train.flow_from_directory("../static/image_db/",
+            target_size=(64, 64), batch_size=32, class_mode="categorical")
+    test_set = test.flow_from_directory("../static/image_db/",
+            target_size=(64, 64), batch_size=32, class_mode="categorical")
+
+    faces = {}
+    for faceValue, faceName in zip(
+            train_set.class_indices.values(), train_set.class_indices.keys()):
+        faces[faceValue] = faceName
+    model = ResNet((64, 64, 3), len(train_set.class_indices.values()))
+    model.compile(loss="categorical_crossentropy", optimizer="adam",
+        metrics=["accuracy", metrics.FalseNegatives(), metrics.FalsePositives(),
+        metrics.TruePositives(), metrics.TrueNegatives()])
+    log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    fit_results = model.fit(train_set, epochs=30, validation_data=test_set, callbacks=[tensorboard_callback])
+
+    eval_score = model.evaluate(test_set)
+    model.save('./ResNet.h5')
+
+
+def ResNet(img_predict=["../static/image_db/4/34_4.jpg"], dir="../static/image_db/"):
+
+    train_set, test_set, test_labels, faces = import_imgs(dir)
+    try:
+        new_model = tf.keras.models.load_model('./ResNet_model.h5')
+    except IOError:
+        return("Pre-trained model not found")
+    eval_score = new_model.evaluate(test_set)
+
+    test_predictions = new_model.predict(test_set, verbose=1)
+    y_pred = np.argmax(test_predictions, axis=-1)
+
+    matrix = confusion_matrix(test_labels, y_pred)
+    matrix = sn.heatmap(matrix, annot=True)
+    plt.show()
+    img_path = img_predict
+    try:
+        for img_path in img_predict:
+            predict_image = preprocessing.image.load_img(img_path, target_size=(64, 64))
+            predict_image = preprocessing.image.img_to_array(predict_image)
+
+            predict_image = np.expand_dims(predict_image, axis=0)
+            result = new_model.predict(predict_image)
+            print("Predicted face:", result)
+    except:
+        return "Could not find the image"
 
 if __name__ == "__main__":
     debug = False

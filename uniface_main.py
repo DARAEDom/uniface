@@ -3,8 +3,9 @@ import glob
 import os
 import cv2 as cv
 import models.LSTM as LSTM
+import models.CNN as CNN
 import models.ResNet as ResNet
-import models.SVC as SVC
+import models.NN as NN
 app = Flask(__name__)
 
 models = ["LSTM", "CNN", "NN", "ResNet"]
@@ -43,15 +44,52 @@ def add_new_dataset():
     return render_template("add.html")
 
 
-@app.route("/API/predict", methods=["POST"])
-def API_predict():
+@app.route("/API/CNN", methods=["POST"])
+def API_CNN():
     if not request.method == "POST":
         return(400, "Wrong request")
-    img_to_predict = request.json("image2predict")
-    model = request.json("learn_model")
-    print(model)
+    img_to_predict= request.json["image2predict"]
+    idx = img_to_predict.index("static")
+    img_to_predict.replace(img_to_predict[:23], "")
     print(img_to_predict)
-    return jsonify("Yes it works")
+    CNN.CNN(img_to_predict)
+    return jsonify(200, "success")
+
+
+@app.route("/API/NN", methods=["POST"])
+def API_NN():
+    if not request.method == "POST":
+        return(400, "Wrong request")
+    img_to_predict= request.json["image2predict"]
+    idx = img_to_predict.index("static")
+    img_to_predict.replace(img_to_predict[:23], "")
+    print(img_to_predict)
+    NN.NN(img_to_predict)
+    return jsonify(200, "success")
+
+
+@app.route("/API/LSTM", methods=["POST"])
+def API_LSTM():
+    if not request.method == "POST":
+        return(400, "Wrong request")
+    img_to_predict= request.json["image2predict"]
+    idx = img_to_predict.index("static")
+    img_to_predict.replace(img_to_predict[:23], "")
+    print(img_to_predict)
+    LSTM.LSTM(img_to_predict)
+    return jsonify(200, "success")
+
+
+@app.route("/API/ResNet", methods=["POST"])
+def API_ResNet():
+    if not request.method == "POST":
+        return(400, "Wrong request")
+    img_to_predict= request.json["image2predict"]
+    idx = img_to_predict.index("static")
+    img_to_predict.replace(img_to_predict[:23], "")
+    print(img_to_predict)
+    ResNet.ResNet(img_to_predict)
+    return jsonify(200, "success")
 
 
 @app.route("/API/images", methods=["GET"])

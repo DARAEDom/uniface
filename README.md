@@ -10,6 +10,9 @@ Dissertation project
 ## To run website
 1. In commandline type `python uniface_main.py` or `py uniface_main.py`
 2. Go to 127.0.0.1:5000, unless you change the default port
+### Keep in mind to predict labels, you need to build the models first
+### use Run models, they will generate needed files
+### This is caused by the fact the pre-trained models exceed the allowed size
 
 ## Run models
 1. Go to models/ directory

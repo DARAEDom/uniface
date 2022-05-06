@@ -1,7 +1,6 @@
 async function select_db() {
   let x = document.querySelector('input[name="dbs"]:checked').id;
   if (x == null) {
-    // TODO: Add warning
     alert("No DB selected")
     console.log("No db selected");
   }
@@ -141,27 +140,78 @@ async function select_group(group){
 async function submit_req() {
   let model = document.querySelector('input[name="model_radio"]:checked').id;
   let image_id = document.querySelector('input[name="image"]:checked').id;
+  if (image_id == ""){
+    alert("Select db")
+    return 0
+  }
   let label_number = image_id.replace( /^\D+/g, '');
   let label = document.getElementById(`label${label_number}`).childNodes;
   console.log(label[0]);
-  if (model) {
-    console.log(model);
-  } else {
+  const pred = label[0].src;
+  console.log(typeof(pred), pred)
+  if (model=="CNN") {
+    try {
+      $.ajax({
+        type: 'POST',
+        headers: {"Content-Type":"application/json;charset=UTF-8"},
+        url: "/API/CNN",
+        data: JSON.stringify({
+          "image2predict":pred
+        })
+      })
+      return 1
+    } catch (e) {
+      alert(`Error has occured ${e}`);
+    }
+  }
+  if (model=="ResNet") {
+    try {
+      $.ajax({
+        type: 'POST',
+        headers: {"Content-Type":"application/json;charset=UTF-8"},
+        url: "/API/ResNet",
+        data: JSON.stringify({
+          "image2predict":pred
+        })
+      })
+      return 1
+    } catch (e) {
+      alert(`Error has occured ${e}`);
+    }
+  }
+  if (model=="NN"){
+    try {
+      $.ajax({
+        type: 'POST',
+        headers: {"Content-Type":"application/json;charset=UTF-8"},
+        url: "/API/NN",
+        data: JSON.stringify({
+          "image2predict":pred
+        })
+      })
+      return 1
+    } catch (e) {
+      alert(`Error has occured ${e}`);
+    }
+  if (model=="LSTM"){
+    try {
+      $.ajax({
+        type: 'POST',
+        headers: {"Content-Type":"application/json;charset=UTF-8"},
+        url: "/API/LSTM",
+        data: JSON.stringify({
+          "image2predict":pred
+        })
+      })
+      return 1
+    } catch (e) {
+      alert(`Error has occured ${e}`);
+    }
+  }
+  } 
+  else {
     alert("No model was selected");
     return "Error";
-  }
-  try {
-    $.ajax({
-      type: 'POST',
-      headers: {"Content-Type":"application/json;charset=UTF-8"},
-      url: "/API/predict",
-      data: JSON.stringify({
-        "learn_model":model,
-        "image2predict":label[0]
-      })
-    })
-  } catch (e) {
-    alert(`Error has occured ${e}`);
   }
 
 }
