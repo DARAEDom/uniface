@@ -1,0 +1,76 @@
+{% extends "main_layout.html" %}
+{% block content %}
+  <head>
+    <script src="{{url_for('static', filename='home_frontend.js')}}"></script>
+    <script src="{{url_for('static', filename='home_ajax.js')}}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{
+      url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+  </head>
+  <div id="side_menu"><p>Predicton models</p> 
+    <div class="radio" style="height:100%;">
+      <div style="height:25%;" class="btn-group-vertical">
+      {% for key in models %}
+        <label>
+          <input type="radio" id="{{key}}" class="btn-check" name="model_radio" autocomplete="off" checked>
+          <label class="btn btn-outline-primary" for="{{key}}">{{key}} </label>
+        </label>
+      {% endfor %}
+      <input type="submit" onclick="submit_req()">
+      </div>
+      <div id="options_menu"><p>Database menu</p>
+      <label>
+        <input type="submit" id="choose_db" value="Change Database" onclick="select_db()">
+      </label>
+        <table class="table">
+          <tr>
+            <th>DB</th>
+            <th>Name</th>
+            <th># Classes</th>
+          </tr>
+        {% for db in dbs %}
+          <tr>
+            <td><input type="radio" id="{{db}}" name="dbs"></td>
+              <label for="db{{loop.index-1}}">
+                <td>{{db}}</td>
+                <td>{{dbs[db]}}</td>
+              </label>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="image_menu"><p>Image menu</p>
+    {% for name in faces.keys() %}
+      {% if loop.index == 1 %}
+      <input type="radio" id="group{{loop.index-1}}" name="group" style="display:none;" checked onclick="console.log('Pressed button {{loop.index}}')"/>
+          <label for="label_group{{loop.index-1}}">
+            <img src="{{ faces[name][0] }}" alt="" class="image_frame" style="left: 30px;  top:{{ 40 + ( (loop.index - 1) * 149) }}px;" onclick="select_group(this)"> 
+          </label>
+      {% else %}
+      <input type="radio" id="group{{loop.index-1}}" name="group" style="display:none;" onclick="console.log('Pressed button {{loop.index}}')"/>
+          <label for="label_group{{loop.index-1}}">
+            <img src="{{ faces[name][0] }}" alt="" class="image_frame" style="left: 30px;  top:{{ 40 + ( (loop.index - 1) * 149) }}px;" onclick="select_group(this)">
+          </label>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <div id="image_display">
+    {% set row = namespace(value=0) %}
+    {% set column = namespace(value=0) %}
+    {% for img_dir in faces[first_dict] %}
+    <input type="radio" id="image{{loop.index-1}}" name="image" onclick="console.log('clicked image {{ loop.index }}')" style="display: none;"/>
+        <label for="image{{loop.index-1}}">
+          <img src="{{ img_dir }}" alt="" class="image_frame" style="left: {{ 60 + (column.value * 160 ) }}px;  top:{{ 40 + (row.value * 140 ) }}px;">
+        </label>
+      {% if loop.index % 5 == 0%}
+        {% set row.value = row.value + 1 %}
+        {% set column.value = 0 %}
+      {% else %}
+        {% set column.value = column.value + 1 %}
+      {% endif %}
+    {% endfor %}
+    </ul>
+  </div>
+{% endblock content %}

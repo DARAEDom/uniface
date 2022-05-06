@@ -1,0 +1,84 @@
+#header {
+  position: absolute;
+  width: 1440px;
+  height: 130px;
+  left: 0px;
+  top: 0px;
+  background: rgba(159, 244, 129, 0.42);
+}
+/* Main Menu */
+#side_menu {
+  position: absolute;
+  width: 232px;
+  height: 894px;
+  left: 0px;
+  top: 130px;
+
+  background: #6DD1F0;
+}
+
+#image_menu {
+  position: absolute;
+  width: 210px;
+  height: 894px;
+  left: 231px;
+  top: 130px;
+  overflow-y: scroll;
+
+  background: rgba(22, 71, 92, 0.71);
+}
+
+#image_display {
+  position: absolute;
+  width: 999px;
+  height: 894px;
+  left: 441px;
+  top: 130px;
+  overflow-y: scroll;
+  background: rgba(14, 39, 104, 0.53);
+}
+/* Results Section*/
+#side_menu_results {
+  position: absolute;
+  width: 293px;
+  height: 896px;
+  left: 0px;
+  top: 128px;
+  background: #6DD1F0;
+}
+
+#section_display0 {
+  position: absolute;
+  width: 854px;
+  height: 295px;
+  left: 293px;
+  top: 127px;
+  background: #FE9797;
+}
+
+#section_display1 {
+  position: absolute;
+  width: 854px;
+  height: 310px;
+  left: 293px;
+  top: 422px;
+  background: #97FEC7;
+}
+
+#section_display2 {
+  position: absolute;
+  width: 854px;
+  height: 292px;
+  left: 293px;
+  top: 732px;
+  background: #97CDFE;
+}
+
+#section_display_results {
+  position: absolute;
+  width: 854px;
+  height: 292px;
+  left: 293px;
+  top: 732px;
+  background: #97CDFE;
+}
