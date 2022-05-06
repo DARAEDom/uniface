@@ -1,5 +1,5 @@
-# uniface
-Dissertation project
+# uniface_dissertation project
+GitHub Repo: https://github.com/DARAEDom/uniface
 
 ## How to run the project
 1. Make sure you have python version 3.8 or newer
