@@ -28,7 +28,8 @@ def import_imgs(dir):
     ):
         faces[faceValue] = faceName
 
-    return train_set, test_set, 0, faces
+    test_labels = test_set.classes
+    return train_set, test_set, test_labels, faces
 
 
 def CNN_build(img_predict="../static/image_db/4/34_4.jpg", dir="../static/image_db/"):
@@ -113,6 +114,7 @@ def CNN_build(img_predict="../static/image_db/4/34_4.jpg", dir="../static/image_
 
             file.close()
 
+
 def CNN(img_predict=["../static/image_db/4/34_4.jpg"], dir="../static/image_db/"):
     train_set, test_set, test_labels, faces = import_imgs(dir)
     try:
@@ -129,19 +131,18 @@ def CNN(img_predict=["../static/image_db/4/34_4.jpg"], dir="../static/image_db/"
     plt.show()
     img_path = img_predict
     try:
-        for img_path in img_predict:
-            predict_image = preprocessing.image.load_img(img_path, target_size=(64, 64))
-            predict_image = preprocessing.image.img_to_array(predict_image)
+        predict_image = preprocessing.image.load_img(img_path, target_size=(64, 64))
+        predict_image = preprocessing.image.img_to_array(predict_image)
 
-            predict_image = np.expand_dims(predict_image, axis=0)
-            result = new_model.predict(predict_image)
-            print("Predicted face:", result)
-    except:
+        predict_image = np.expand_dims(predict_image, axis=0)
+        result = new_model.predict(predict_image)
+        print("Predicted face:", result)
+    except Exception:
         return "Could not find the image"
 
 
 if __name__ == "__main__":
     start_time = time.monotonic()
-    CNN_build()
+    CNN()
     end_time = time.monotonic()
     print(datetime.timedelta(seconds=end_time - start_time))

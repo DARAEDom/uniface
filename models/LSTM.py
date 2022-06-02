@@ -123,6 +123,6 @@ def LSTM(img_predict=["../static/image_db/4/31_4.jpg"], dir="../static/image_db/
 
 if __name__ == "__main__":
     start_time = time.monotonic()
-    LSTM_build()
+    LSTM()
     end_time = time.monotonic()
     print(datetime.timedelta(seconds=end_time - start_time))

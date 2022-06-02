@@ -27,8 +27,9 @@ def import_imgs(dir):
         train_set.class_indices.values(), train_set.class_indices.keys()
     ):
         faces[faceValue] = faceName
+    test_labels = test_set.classes
 
-    return train_set, test_set, 0, faces
+    return train_set, test_set, test_labels, faces
 
 
 def NN_build(img_predict="../static/image_db/4/34_4.jpg", dir="../static/image_db/"):
@@ -122,6 +123,6 @@ def NN(img_predict=["../static/image_db/4/34_4.jpg"], dir="../static/image_db/")
 
 if __name__ == "__main__":
     start_time = time.monotonic()
-    NN_build()
+    NN()
     end_time = time.monotonic()
     print(datetime.timedelta(seconds=end_time - start_time))

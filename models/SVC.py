@@ -9,23 +9,12 @@ from sklearn.utils.fixes import loguniform
 import numpy as np
 import cv2 as cv
 import glob
+from skimage.transform import resize
+from skimage.io import imread
 
-
-def PCA_feature_extraction(face_data, train, test):
-    # num of images, num of features 50 in sklearn dataset
-    components = min(face_data.images.shape[0], face_data.data.shape[1])
-
-    pca = PCA(n_components=50, svd_solver="auto", iterated_power="auto")
-    pca_model = pca.fit(train)
-
-    train_pca = pca_model.transform(train)
-    test_pca = pca_model.transform(test)
-
-    return train_pca, test_pca
-
+class_names = ["a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "u", "v"]
 
 def PCA_calculation(img_size, train, test):
-    components = min(img_size, 50)
 
     pca = PCA(n_components=0.85, svd_solver="auto", iterated_power="auto")
     pca_model = pca.fit(train)
@@ -57,7 +46,7 @@ def SVC_rbf(X, y):
     plt.show()
 
     print("RBF kernel", classification_report(y_labels, rbf_predict,
-        target_names=["a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "u", "v"]))
+        target_names=class_names))
 
 
 def SVC_linearv2(X, y):
@@ -74,14 +63,23 @@ def SVC_linearv2(X, y):
         C=10.0, multi_class="crammer_singer",
         fit_intercept=True, class_weight=None, max_iter=10)
 
-    LinearSVC_fit = LinearSVC.fit(X_images_pca, X_labels)
-
-    LinearSVC_predict = LinearSVC_fit.predict(y_images_pca)
-
+    LinearSVC.fit(X_images_pca, X_labels)
+    LinearSVC_predict = LinearSVC.predict(y_images_pca)
     ConfusionMatrixDisplay(confusion_matrix(y_labels, LinearSVC_predict,)).plot()
     plt.show()
     print("Linear kernel", classification_report(y_labels, LinearSVC_predict,
-        target_names=["a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "u"]))
+        target_names=class_names))
+    
+    #    predict_img = cv.imread(predict_img)
+    #    predict_img = cv.cvtColor(predict_img, cv.COLOR_BGR2GRAY)
+#   #     predict_img = resize(predict_img, (26, 26))
+    #    predict_img = np.asarray(predict_img)
+    #    predict_img = predict_img.astype(float)
+    #    predict_img = predict_img.reshape(predict_img.shape[0], predict_img.shape[1])
+    #    predicton = [predict_img.flatten()]
+    #    prob = LinearSVC.predict_proba(predicton)
+    #    for key, val in enumerate(class_names):
+    #        print("Probability for ", val, "is : ", class_names[LinearSVC.predict(predicton)[0]])
 
 
 def SVC_poly(X, y):
@@ -95,17 +93,17 @@ def SVC_poly(X, y):
     X_images_pca, y_images_pca = PCA_calculation(80*70, X_images, y_images)
 
     SVC_poly = svm.SVC(kernel="poly", degree=3, gamma="scale", coef0=0.0,
-            tol=1e-3, class_weight=None,
+            tol=1e-3, class_weight=None, probability=True,
             decision_function_shape="ovr", max_iter=10)
 
-    SVC_poly_fit = SVC_poly.fit(X_images_pca, X_labels)
+    SVC_poly.fit(X_images_pca, X_labels)
 
-    poly_predict = SVC_poly_fit.predict(y_images_pca)
+    poly_predict = SVC_poly.predict(y_images_pca)
+
     ConfusionMatrixDisplay(confusion_matrix(y_labels, poly_predict,)).plot()
     plt.show()
-
-    print("Poly kernel", classification_report(y_labels, poly_predict,
-        target_names=["a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "u", "v"]))
+    print("Linear kernel", classification_report(y_labels, poly_predict,
+        target_names=class_names))
 
 
 def SVC_linear(X, y):
@@ -119,15 +117,24 @@ def SVC_linear(X, y):
     X_images_pca, y_images_pca = PCA_calculation(80*70, X_images, y_images)
 
     SVC_linear = svm.SVC(kernel="linear", C=1.0, tol=1e-3, class_weight=None,
-        decision_function_shape="ovr", max_iter=10)
+        decision_function_shape="ovr", max_iter=10, probability=True)
 
-    SVC_linear_fit = SVC_linear.fit(X_images_pca, X_labels)
+    SVC_linear.fit(X_images_pca, X_labels)
+    linear_predict = SVC_linear.predict(y_images_pca)
 
-    linear_predict = SVC_linear_fit.predict(y_images_pca)
     ConfusionMatrixDisplay(confusion_matrix(y_labels, linear_predict,)).plot()
     plt.show()
+    print("Linear kernel", classification_report(y_labels, linear_predict,
+        target_names=class_names))
 
-    print("Linear kernel", classification_report(y_labels, linear_predict, target_names=["a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "u"]))
+    #img=imread(predict_img)
+    #img_resize=resize(img,(28,28))
+    #l=[img_resize.flatten()]
+    #probability=SVC_linear.predict_proba(l)
+    #for ind,val in enumerate(class_names):
+    #    print(f'{val} = {probability[0][ind]*100}%')
+    #print("The predicted image is : "+class_names[SVC_linear.predict(l)[0]])
+    print("Linear kernel", classification_report(y_labels, linear_predict, target_names=class_names))
 
 
 
