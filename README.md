@@ -1,5 +1,15 @@
-# uniface_dissertation project
-GitHub Repo: https://github.com/DARAEDom/uniface
+# uniface project
+GitHub Repository: https://github.com/DARAEDom/uniface
+
+## About
+The uniface project is my dissertation project that aimed to provide comparison of various ML/Deep learning models to compare their performance against ORL dataset. 
+
+Modeles included in this project include:
+- SVC
+- CNN
+- ResNet
+- LSTM
+- NN
 
 ## How to run the project
 1. Make sure you have python version 3.8 or newer
