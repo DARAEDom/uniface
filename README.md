@@ -11,6 +11,10 @@ Modeles included in this project include:
 - LSTM
 - NN
 
+Every model after compilation is save in .h5 format (TensorFlow), except SVC. By default all compiled models are included, however, if you want to compile them, you need to change code from model() to model_build().
+#### Example:
+In models directory you will find CNN.py, open it in IDE of your choice, at the end of the file you will find __main__ function. Replace `CNN()` call with `CNN_build` to compile model. 
+
 ## How to run the project
 1. Make sure you have python version 3.8 or newer
 2. Enable virtual environment if you need to
